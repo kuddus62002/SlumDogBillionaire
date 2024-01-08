@@ -1,18 +1,44 @@
 #include "iGraphics.h"
+#include<iostream>
+using namespace std;
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Idraw Here::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
-char load[7];
-int loadIndex = 0;
-bool loadfinish = false;
+int load[7];
+int indexLoad = 0;
+int a;
+int loadTimer = 0;
+bool continueDone = false;
+
+void fuctionForLoad()
+{
+	loadTimer++;
+
+	if (loadTimer >= 500)
+	{
+		indexLoad++;
+		loadTimer = 0;
+	}
+}
+
 void iDraw()
 {
 	iClear();
-	if ()
+	if (indexLoad < 4)
+		fuctionForLoad();
 
+//	iShowImage(0, 0, 600, 600, a);
+	iShowImage(0, 0, 1200, 800, load[indexLoad]);
+
+	if (continueDone){
+		iFilledRectangle(500, 650, 200, 50);
+		iFilledRectangle(500, 550, 200, 50);
+		iFilledRectangle(500, 450, 200, 50);
+		iFilledRectangle(500, 350, 200, 50);
+	}
 }
 
-
-
+// isettimer(changecharimg, 0.2)
+//changecharimg index++; isettimer(changecharimg, 0.2)
 
 
 /*function iMouseMove() is called when the user presses and drags the mouse.
@@ -35,8 +61,13 @@ void iMouse(int button, int state, int mx, int my)
 	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-
+		if (indexLoad == 4){
+			continueDone = true;
+			indexLoad++;
+		}
 		
+
+		// if (mx >= leftX && mx <= rightX && my <= topY && my >= bottomY)
 	}
 	
 	
@@ -91,20 +122,13 @@ void iSpecialKeyboard(unsigned char key)
 	
 }
 void loading(){
-	load[0] = iLoadImage("LPage\\L1.png");
-	load[1] = iLoadImage("LPage\\L2.png");
-	load[2] = iLoadImage("LPage\\L3.png");
-	load[3] = iLoadImage("LPage\\L4.png");
-}
-
-
-void fuctionForLoad()
-{
-	loadIndex++;
-	if (loadIndex >= 5)
-	{
-		loadfinish = true;
-	}
+	cout << "Image loading";
+	load[0] = iLoadImage(".\\LPage\\L1.png");
+	load[1] = iLoadImage(".\\LPage\\L2.png");
+	load[2] = iLoadImage(".\\LPage\\L3.png");
+	load[3] = iLoadImage(".\\LPage\\L4.png");
+	load[4] = iLoadImage(".\\LPage\\L5.png");
+	load[5] = iLoadImage(".\\LPage\\L6.png");
 }
 
 
@@ -112,7 +136,9 @@ int main()
 {
 	///srand((unsigned)time(NULL));
 	iInitialize(1200, 800, "Project Title");
+	//a = iLoadImage("LPage\\L1.png");
 	///updated see the documentations
+	loading();
 	iStart();
 	return 0;
 }
