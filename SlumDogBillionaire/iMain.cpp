@@ -8,6 +8,8 @@ int indexLoad = 0;
 int a;
 int loadTimer = 0;
 bool continueDone = false;
+int b;
+int c;
 
 void fuctionForLoad()
 {
@@ -35,7 +37,10 @@ void iDraw()
 		iFilledRectangle(500, 450, 200, 50);
 		iFilledRectangle(500, 350, 200, 50);
 	}
+	//iShowImage(0, 0, 1200, 800, b);
+	//iShowImage(50, 50, 200, 300, c);
 }
+
 
 // isettimer(changecharimg, 0.2)
 //changecharimg index++; isettimer(changecharimg, 0.2)
@@ -135,8 +140,11 @@ void loading(){
 int main()
 {
 	///srand((unsigned)time(NULL));
-	iInitialize(1200, 800, "Project Title");
+	iInitialize(1200, 800, "Slum Dog Billionaire");
 	//a = iLoadImage("LPage\\L1.png");
+	//b = iLoadImage(".\\LPage\\bg1.png");
+	//c = iLoadImage(".\\LPage\\R1.png");
+
 	///updated see the documentations
 	loading();
 	iStart();
