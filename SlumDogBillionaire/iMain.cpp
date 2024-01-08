@@ -3,38 +3,67 @@
 using namespace std;
 
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Idraw Here::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
+int pageLength = 1200;
+int weigth = 800;
+int a, b, c, d, e, f, g, h, i, j;
 int load[7];
+
 int indexLoad = 0;
-int a;
 int loadTimer = 0;
+int startButtonClick = 0;
+int storyButtonClick = 1;
+
+int homePage = 1;
+bool Start = false;
+bool storyPage = false;
+bool aboutpage = false;
+bool rulepage = false;
+
 bool continueDone = false;
 
-void fuctionForLoad()
-{
-	loadTimer++;
+void fuctionForLoad();
+void loadPage();
+void StartPageImage();
 
-	if (loadTimer >= 500)
-	{
-		indexLoad++;
-		loadTimer = 0;
-	}
-}
+void drawStartPage();
+void drawStoryPage();
+void drawAboutPage();
+void drawRulePage();
+
+
+void StartButtonClickHandler();
+void StoryButtonClickHandler();
+void AboutButtonClickHandler();
+void RuleButtonClickHandler();
+void BackButtonClickHandler();
+
+
+
 
 void iDraw()
 {
 	iClear();
-	if (indexLoad < 4)
-		fuctionForLoad();
-
-//	iShowImage(0, 0, 600, 600, a);
-	iShowImage(0, 0, 1200, 800, load[indexLoad]);
-
-	if (continueDone){
-		iFilledRectangle(500, 650, 200, 50);
-		iFilledRectangle(500, 550, 200, 50);
-		iFilledRectangle(500, 450, 200, 50);
-		iFilledRectangle(500, 350, 200, 50);
+	if (homePage == 1){
+		loadPage();
 	}
+
+	else if (Start){
+		drawStartPage();
+	}
+
+	else if (storyPage){
+		drawStoryPage();
+	}
+
+	else if (aboutpage){
+		drawAboutPage();
+	}
+	else if (rulepage){
+		drawRulePage();
+	}
+
+	
+	
 }
 
 // isettimer(changecharimg, 0.2)
@@ -61,13 +90,33 @@ void iMouse(int button, int state, int mx, int my)
 	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
+
+		
 		if (indexLoad == 4){
 			continueDone = true;
 			indexLoad++;
 		}
-		
-
+		printf("x = %d, y = %d\n", mx, my);
 		// if (mx >= leftX && mx <= rightX && my <= topY && my >= bottomY)
+		if (homePage == 1 && (mx >= 518 && mx <= 645) && (my >= 660 && my <= 715)){
+			StartButtonClickHandler();
+		}
+
+		else if (homePage == 1 && (mx>=515 && mx<=640) && (my>=560 && my<=615)){
+			StoryButtonClickHandler();
+		}
+
+		else if (homePage == 1 && (mx >= 516 && mx <= 642) && (my >= 258 && my <= 310)){
+			AboutButtonClickHandler();
+		}
+
+		else if (homePage == 1 && (mx >= 516 && mx <= 642) && (my >= 465 && my <= 510)){
+			RuleButtonClickHandler();
+		}
+		else if ((Start | storyPage | aboutpage | rulepage) && (mx >= 10 && mx <= 50) && (my >= 33 && my <= 60)){
+			BackButtonClickHandler();
+		}
+		
 	}
 	
 	
@@ -122,23 +171,138 @@ void iSpecialKeyboard(unsigned char key)
 	
 }
 void loading(){
-	cout << "Image loading";
+	//cout << "Image loading";
 	load[0] = iLoadImage(".\\LPage\\L1.png");
 	load[1] = iLoadImage(".\\LPage\\L2.png");
 	load[2] = iLoadImage(".\\LPage\\L3.png");
 	load[3] = iLoadImage(".\\LPage\\L4.png");
 	load[4] = iLoadImage(".\\LPage\\L5.png");
-	load[5] = iLoadImage(".\\LPage\\L6.png");
+	load[5] = iLoadImage(".\\LPage\\L6.png"); 
+	load[6] = iLoadImage(".\\LPage\\L7.png");
 }
+void button(){
+	a = iLoadImage(".\\LPage\\Button\\L8.png");
+	b = iLoadImage(".\\LPage\\Button\\L9.png");
+	c = iLoadImage(".\\LPage\\Button\\L10.png");
+	d = iLoadImage(".\\LPage\\Button\\L11.png");
+	e = iLoadImage(".\\LPage\\Button\\L12.png");
+}
+void StartPageImage(){
+	f = iLoadImage(".\\LPage\\L7.png");
+	g = iLoadImage(".\\LPage\\4.png");
+	h = iLoadImage(".\\LPage\\3.png");
+	i = iLoadImage(".\\LPage\\back.png");
+	j = iLoadImage(".\\LPage\\Rules.png");
+}
+
+void fuctionForLoad()
+{
+	loadTimer++;
+
+	if (loadTimer >= 500)
+	{
+		indexLoad++;
+		loadTimer = 0;
+	}
+}
+
+
+void loadPage(){
+	if (indexLoad < 4)
+		fuctionForLoad();
+
+	//	iShowImage(0, 0, 600, 600, a);
+	iShowImage(0, 0, 1200, 800, load[indexLoad]);
+
+	/*if (continueDone){
+	iFilledRectangle(500, 650, 200, 50);
+	iFilledRectangle(500, 550, 200, 50);
+	iFilledRectangle(500, 450, 200, 50);
+	iFilledRectangle(500, 350, 200, 50);
+	}*/
+
+	if (continueDone){
+		iShowImage(420, 550, 320, 250, a);
+		iShowImage(420, 450, 320, 250, b);
+		iShowImage(420, 350, 320, 250, c);
+		iShowImage(420, 250, 320, 250, d);
+		iShowImage(420, 150, 320, 250, e);
+
+	}
+}
+
+void drawStartPage(){
+	iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(0, 0, pageLength, weigth, f);
+	iShowImage(5, 5, 50, 80, i);
+}
+
+void StartButtonClickHandler(){
+	homePage = 0;
+	Start = true;
+}
+
+void drawStoryPage(){
+	iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(0, 0, pageLength, weigth, g);
+	iShowImage(5, 5, 50, 80, i);
+}
+
+void StoryButtonClickHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = true;
+}
+
+void drawAboutPage(){
+	iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(0, 0, pageLength, weigth, h);
+	iShowImage(5, 5, 50, 80, i);
+}
+
+void AboutButtonClickHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = true;
+}
+
+void drawRulePage(){
+	iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(0, 0, pageLength, weigth, j);
+	iShowImage(5, 5, 50, 80, i);
+}
+
+void RuleButtonClickHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = true;
+}
+
+void BackButtonClickHandler(){
+	homePage = 1;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+}
+
+
+
 
 
 int main()
 {
 	///srand((unsigned)time(NULL));
-	iInitialize(1200, 800, "Project Title");
+	iInitialize(pageLength, weigth , "Project Title");
 	//a = iLoadImage("LPage\\L1.png");
 	///updated see the documentations
 	loading();
+	button();
+	loadPage();
+	StartPageImage();
 	iStart();
 	return 0;
 }
