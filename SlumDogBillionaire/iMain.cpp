@@ -5,19 +5,25 @@ using namespace std;
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Idraw Here::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 int pageLength = 1200;
 int weigth = 800;
-int a, b, c, d, e, f, g, h, i, j;
+int a, b, c, d, e, f, g, h, i, j, k, l;
 int load[7];
+
+int kuddusindex = 0;
+int kuddusCoordinateX = 0;
+int kuddusCoordinateY = 0;
 
 int indexLoad = 0;
 int loadTimer = 0;
 int startButtonClick = 0;
 int storyButtonClick = 1;
+int backgroundimage = 0;
 
 int homePage = 1;
 bool Start = false;
 bool storyPage = false;
 bool aboutpage = false;
 bool rulepage = false;
+bool level1 = false;
 
 bool continueDone = false;
 
@@ -25,10 +31,12 @@ void fuctionForLoad();
 void loadPage();
 void StartPageImage();
 
+void drawlevel1();
 void drawStartPage();
 void drawStoryPage();
 void drawAboutPage();
 void drawRulePage();
+void drawbackground1();
 
 
 void StartButtonClickHandler();
@@ -36,6 +44,7 @@ void StoryButtonClickHandler();
 void AboutButtonClickHandler();
 void RuleButtonClickHandler();
 void BackButtonClickHandler();
+void level1ButtonClickHandler();
 
 
 
@@ -60,6 +69,17 @@ void iDraw()
 	}
 	else if (rulepage){
 		drawRulePage();
+	}
+	else if (level1){
+		//iFilledRectangle(0, 0, pageLength, weigth);
+		iShowImage(backgroundimage, 0, pageLength, weigth, k);
+		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, k);
+		backgroundimage -= 0.05;
+		if (backgroundimage <-1200){
+			backgroundimage = 0;
+		}
+
+		drawlevel1();
 	}
 
 	
@@ -96,7 +116,7 @@ void iMouse(int button, int state, int mx, int my)
 			continueDone = true;
 			indexLoad++;
 		}
-		printf("x = %d, y = %d\n", mx, my);
+		//printf("x = %d, y = %d\n", mx, my);
 		// if (mx >= leftX && mx <= rightX && my <= topY && my >= bottomY)
 		if (homePage == 1 && (mx >= 518 && mx <= 645) && (my >= 660 && my <= 715)){
 			StartButtonClickHandler();
@@ -113,8 +133,11 @@ void iMouse(int button, int state, int mx, int my)
 		else if (homePage == 1 && (mx >= 516 && mx <= 642) && (my >= 465 && my <= 510)){
 			RuleButtonClickHandler();
 		}
-		else if ((Start | storyPage | aboutpage | rulepage) && (mx >= 10 && mx <= 50) && (my >= 33 && my <= 60)){
+		else if ((Start || storyPage || aboutpage || rulepage) && (mx >= 10 && mx <= 50) && (my >= 33 && my <= 60)){
 			BackButtonClickHandler();
+		}
+		else if (Start == true && (mx >= 40 && mx <= 209) && (my >= 531 && my <= 768)){
+			level1ButtonClickHandler();
 		}
 		
 	}
@@ -186,6 +209,7 @@ void button(){
 	c = iLoadImage(".\\LPage\\Button\\L10.png");
 	d = iLoadImage(".\\LPage\\Button\\L11.png");
 	e = iLoadImage(".\\LPage\\Button\\L12.png");
+	k = iLoadImage(".\\LPage\\Background\\bg1.png");
 }
 void StartPageImage(){
 	f = iLoadImage(".\\LPage\\L7.png");
@@ -193,6 +217,11 @@ void StartPageImage(){
 	h = iLoadImage(".\\LPage\\3.png");
 	i = iLoadImage(".\\LPage\\back.png");
 	j = iLoadImage(".\\LPage\\Rules.png");
+	
+}
+
+void level1PageImage(){
+	
 }
 
 void fuctionForLoad()
@@ -289,6 +318,26 @@ void BackButtonClickHandler(){
 	rulepage = false;
 }
 
+void drawlevel1(){
+	drawbackground1();
+}
+
+void drawbackground1(){
+	for (int i = backgroundimage; i <= pageLength; i++){
+		
+	}
+}
+
+void level1ButtonClickHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+	level1 = true;
+}
+
+
 
 
 
@@ -303,6 +352,7 @@ int main()
 	button();
 	loadPage();
 	StartPageImage();
+	level1PageImage();
 	iStart();
 	return 0;
 }
