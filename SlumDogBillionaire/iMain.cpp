@@ -7,16 +7,19 @@ int pageLength = 1200;
 int weigth = 800;
 int a, b, c, d, e, f, g, h, i, j, k, l;
 int load[7];
+int kuddusRun[6];
 
-int kuddusindex = 0;
-int kuddusCoordinateX = 0;
-int kuddusCoordinateY = 0;
+int Kuddusindex = 0;
+int KuddusCoordinateX = 10;
+int KuddusCoordinateY = 125;
+int standCounter = 0;
+
 
 int indexLoad = 0;
 int loadTimer = 0;
 int startButtonClick = 0;
 int storyButtonClick = 1;
-int backgroundimage = 0;
+double backgroundimage = 0;
 
 int homePage = 1;
 bool Start = false;
@@ -24,7 +27,9 @@ bool storyPage = false;
 bool aboutpage = false;
 bool rulepage = false;
 bool level1 = false;
+bool flag = false;
 
+bool StandPosition = true;
 bool continueDone = false;
 
 void fuctionForLoad();
@@ -71,14 +76,7 @@ void iDraw()
 		drawRulePage();
 	}
 	else if (level1){
-		//iFilledRectangle(0, 0, pageLength, weigth);
-		iShowImage(backgroundimage, 0, pageLength, weigth, k);
-		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, k);
-		backgroundimage -= 0.05;
-		if (backgroundimage <-1200){
-			backgroundimage = 0;
-		}
-
+		
 		drawlevel1();
 	}
 
@@ -116,7 +114,7 @@ void iMouse(int button, int state, int mx, int my)
 			continueDone = true;
 			indexLoad++;
 		}
-		//printf("x = %d, y = %d\n", mx, my);
+		printf("x = %d, y = %d\n", mx, my);
 		// if (mx >= leftX && mx <= rightX && my <= topY && my >= bottomY)
 		if (homePage == 1 && (mx >= 518 && mx <= 645) && (my >= 660 && my <= 715)){
 			StartButtonClickHandler();
@@ -180,11 +178,22 @@ void iSpecialKeyboard(unsigned char key)
 	
 	if (key == GLUT_KEY_RIGHT)
 	{
-				
+		flag = true;
+		KuddusCoordinateX += 10;
+		Kuddusindex++;
+		if (Kuddusindex >= 5){
+			Kuddusindex = 0;
+		}
+		StandPosition = false;
 	}
 	if (key == GLUT_KEY_LEFT)
 	{
-		
+		KuddusCoordinateX -= 10;
+		Kuddusindex--;
+		if (Kuddusindex <= 0){
+			Kuddusindex = 5;
+		}
+		StandPosition = false;
 	}
 	
 	if (key == GLUT_KEY_HOME)
@@ -218,6 +227,17 @@ void StartPageImage(){
 	i = iLoadImage(".\\LPage\\back.png");
 	j = iLoadImage(".\\LPage\\Rules.png");
 	
+}
+
+void kuddusImage(){
+	kuddusRun[0] = iLoadImage(".\\LPage\\Kuddus\\Run\\R1.png");
+	kuddusRun[1] = iLoadImage(".\\LPage\\Kuddus\\Run\\R2.png");
+	kuddusRun[2] = iLoadImage(".\\LPage\\Kuddus\\Run\\R3.png");
+	kuddusRun[3] = iLoadImage(".\\LPage\\Kuddus\\Run\\R4.png");
+	kuddusRun[4] = iLoadImage(".\\LPage\\Kuddus\\Run\\R5.png");
+	cout << "Image loading";
+	kuddusRun[5] = iLoadImage(".\\LPage\\Kuddus\\Stand\\R1.png");
+
 }
 
 void level1PageImage(){
@@ -320,12 +340,33 @@ void BackButtonClickHandler(){
 
 void drawlevel1(){
 	drawbackground1();
+	if (!StandPosition){
+		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
+		if (standCounter >= 20){
+			standCounter = 0;
+			Kuddusindex = 0;
+			StandPosition = true;
+			flag = false;
+		}
+	}
+	else {
+		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
+	}
 }
 
 void drawbackground1(){
-	for (int i = backgroundimage; i <= pageLength; i++){
-		
+	//iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(backgroundimage, 0, pageLength, weigth, k);
+	if (flag)
+	{
+		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, k);
+		backgroundimage -= 0.05;
+		//cout << backgroundimage << "\n";
+		if (backgroundimage <-1200){
+			backgroundimage = 0;
+		}
 	}
+	
 }
 
 void level1ButtonClickHandler(){
@@ -352,6 +393,7 @@ int main()
 	button();
 	loadPage();
 	StartPageImage();
+	kuddusImage();
 	level1PageImage();
 	iStart();
 	return 0;
