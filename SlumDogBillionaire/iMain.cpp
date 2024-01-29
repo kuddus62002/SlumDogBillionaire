@@ -27,6 +27,7 @@ bool storyPage = false;
 bool aboutpage = false;
 bool rulepage = false;
 bool level1 = false;
+//bool level2 = false;
 bool flag = false;
 
 bool StandPosition = true;
@@ -37,6 +38,7 @@ void loadPage();
 void StartPageImage();
 
 void drawlevel1();
+//void drawleve2();
 void drawStartPage();
 void drawStoryPage();
 void drawAboutPage();
@@ -50,6 +52,7 @@ void AboutButtonClickHandler();
 void RuleButtonClickHandler();
 void BackButtonClickHandler();
 void level1ButtonClickHandler();
+//void level2ButtonClickHandler();
 
 
 
@@ -79,6 +82,11 @@ void iDraw()
 		
 		drawlevel1();
 	}
+	//else if (level2){
+
+		//drawlevel2();
+	//}forlvl2
+	
 
 	
 	
@@ -137,7 +145,10 @@ void iMouse(int button, int state, int mx, int my)
 		else if (Start == true && (mx >= 40 && mx <= 209) && (my >= 531 && my <= 768)){
 			level1ButtonClickHandler();
 		}
-		
+		//else if (Start == true && (mx >=  && mx <= ) && (my >=  && my <= )){
+			//level2ButtonClickHandler();
+		//}
+
 	}
 	
 	
@@ -254,6 +265,22 @@ void fuctionForLoad()
 		loadTimer = 0;
 	}
 }
+
+/*void level2PageImage(){
+
+}
+
+void fuctionForLoad()
+{
+	loadTimer++;
+
+	if (loadTimer >= 500)
+	{
+		indexLoad++;
+		loadTimer = 0;
+	}
+}*/
+
 
 
 void loadPage(){
@@ -377,6 +404,15 @@ void level1ButtonClickHandler(){
 	rulepage = false;
 	level1 = true;
 }
+void level2ButtonClickHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+	level1 = false;
+	level2 = true;
+}
 
 
 
@@ -395,6 +431,7 @@ int main()
 	StartPageImage();
 	kuddusImage();
 	level1PageImage();
+	level2PageImage();
 	iStart();
 	return 0;
 }
