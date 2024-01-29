@@ -404,7 +404,7 @@ void level1ButtonClickHandler(){
 	rulepage = false;
 	level1 = true;
 }
-void level2ButtonClickHandler(){
+/*void level2ButtonClickHandler(){
 	homePage = 0;
 	Start = false;
 	storyPage = false;
@@ -412,7 +412,7 @@ void level2ButtonClickHandler(){
 	rulepage = false;
 	level1 = false;
 	level2 = true;
-}
+}*/
 
 
 
@@ -431,7 +431,7 @@ int main()
 	StartPageImage();
 	kuddusImage();
 	level1PageImage();
-	level2PageImage();
+	//level2PageImage();
 	iStart();
 	return 0;
 }
