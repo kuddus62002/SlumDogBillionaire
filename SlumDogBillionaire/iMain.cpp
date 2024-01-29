@@ -85,7 +85,7 @@ void iDraw()
 	//else if (level2){
 
 		//drawlevel2();
-	//}forlvl2
+	//}
 	
 
 	
@@ -230,6 +230,7 @@ void button(){
 	d = iLoadImage(".\\LPage\\Button\\L11.png");
 	e = iLoadImage(".\\LPage\\Button\\L12.png");
 	k = iLoadImage(".\\LPage\\Background\\bg1.png");
+	//l = iLoadImage(".\\LPage\\Background\\bank bg.jpg");
 }
 void StartPageImage(){
 	f = iLoadImage(".\\LPage\\L7.png");
@@ -395,6 +396,22 @@ void drawbackground1(){
 	}
 	
 }
+
+void drawbackground2(){
+	//iFilledRectangle(0, 0, pageLength, weigth);
+	/*iShowImage(backgroundimage, 0, pageLength, weigth, l);
+	if (flag)
+	{
+		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, l);
+		backgroundimage -= 0.05;
+		//cout << backgroundimage << "\n";
+		if (backgroundimage <-1200){
+			backgroundimage = 0;
+		}
+	}
+
+}
+*/
 
 void level1ButtonClickHandler(){
 	homePage = 0;
