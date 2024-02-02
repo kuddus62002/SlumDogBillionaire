@@ -1,1 +1,7 @@
-\Debug\
+*/Debug/
+*/*/Debug/
+
+*.opendb
+*.opensdf
+*.sdf
+*.suo
