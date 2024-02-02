@@ -21,6 +21,7 @@ int startButtonClick = 0;
 int storyButtonClick = 1;
 double backgroundimage = 0;
 
+
 int homePage = 1;
 bool Start = false;
 bool storyPage = false;
@@ -179,7 +180,7 @@ void iKeyboard(unsigned char key)
 
 /*
 function iSpecialKeyboard() is called whenver user hits special keys like-
-function keys, home, end, pg up, pg down, arraows etc. you have to use
+  function keys, home, end, pg up, pg down, arraows etc. you have to use
 appropriate constants to detect them. A list is:
 GLUT_KEY_F1, GLUT_KEY_F2, GLUT_KEY_F3, GLUT_KEY_F4, GLUT_KEY_F5, GLUT_KEY_F6,
 GLUT_KEY_F7, GLUT_KEY_F8, GLUT_KEY_F9, GLUT_KEY_F10, GLUT_KEY_F11, GLUT_KEY_F12,
@@ -226,7 +227,7 @@ void loading(){
 	load[5] = iLoadImage(".\\LPage\\L6.png"); 
 	load[6] = iLoadImage(".\\LPage\\L7.png");
 }
-void button(){
+void button() {
 	a = iLoadImage(".\\LPage\\Button\\L8.png");
 	b = iLoadImage(".\\LPage\\Button\\L9.png");
 	c = iLoadImage(".\\LPage\\Button\\L10.png");
