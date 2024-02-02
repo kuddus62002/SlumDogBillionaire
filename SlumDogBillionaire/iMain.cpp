@@ -27,23 +27,26 @@ bool storyPage = false;
 bool aboutpage = false;
 bool rulepage = false;
 bool level1 = false;
-//bool level2 = false;
+bool level2 = false;
 bool flag = false;
 
 bool StandPosition = true;
 bool continueDone = false;
 
 void fuctionForLoad();
+void fuctionForLoad2();
 void loadPage();
 void StartPageImage();
 
 void drawlevel1();
-//void drawleve2();
+void drawlevel2();
 void drawStartPage();
 void drawStoryPage();
 void drawAboutPage();
 void drawRulePage();
 void drawbackground1();
+void drawbackground2();
+
 
 
 void StartButtonClickHandler();
@@ -52,7 +55,7 @@ void AboutButtonClickHandler();
 void RuleButtonClickHandler();
 void BackButtonClickHandler();
 void level1ButtonClickHandler();
-//void level2ButtonClickHandler();
+void level2ButtonClickHandler();
 
 
 
@@ -82,10 +85,10 @@ void iDraw()
 		
 		drawlevel1();
 	}
-	//else if (level2){
+	else if (level2){
 
-		//drawlevel2();
-	//}
+		drawlevel2();
+	}
 	
 
 	
@@ -145,9 +148,9 @@ void iMouse(int button, int state, int mx, int my)
 		else if (Start == true && (mx >= 40 && mx <= 209) && (my >= 531 && my <= 768)){
 			level1ButtonClickHandler();
 		}
-		//else if (Start == true && (mx >=  && mx <= ) && (my >=  && my <= )){
-			//level2ButtonClickHandler();
-		//}
+		else if (Start == true && (mx >= 879 && mx <= 1050) && (my >= 584 && my <= 761)){
+			level2ButtonClickHandler();
+		}
 
 	}
 	
@@ -230,7 +233,7 @@ void button(){
 	d = iLoadImage(".\\LPage\\Button\\L11.png");
 	e = iLoadImage(".\\LPage\\Button\\L12.png");
 	k = iLoadImage(".\\LPage\\Background\\bg1.png");
-	//l = iLoadImage(".\\LPage\\Background\\bank bg.jpg");
+	l = iLoadImage(".\\LPage\\Background\\bankbg.jpg");
 }
 void StartPageImage(){
 	f = iLoadImage(".\\LPage\\L7.png");
@@ -267,11 +270,11 @@ void fuctionForLoad()
 	}
 }
 
-/*void level2PageImage(){
+void level2PageImage(){
 
 }
 
-void fuctionForLoad()
+void fuctionForLoad2()
 {
 	loadTimer++;
 
@@ -280,7 +283,7 @@ void fuctionForLoad()
 		indexLoad++;
 		loadTimer = 0;
 	}
-}*/
+}
 
 
 
@@ -381,6 +384,21 @@ void drawlevel1(){
 		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
 	}
 }
+void drawlevel2(){
+	drawbackground2();
+	if (!StandPosition){
+		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
+		if (standCounter >= 20){
+			standCounter = 0;
+			Kuddusindex = 0;
+			StandPosition = true;
+			flag = false;
+		}
+	}
+	else {
+		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
+	}
+}
 
 void drawbackground1(){
 	//iFilledRectangle(0, 0, pageLength, weigth);
@@ -399,7 +417,7 @@ void drawbackground1(){
 
 void drawbackground2(){
 	//iFilledRectangle(0, 0, pageLength, weigth);
-	/*iShowImage(backgroundimage, 0, pageLength, weigth, l);
+	iShowImage(backgroundimage, 0, pageLength, weigth, l);
 	if (flag)
 	{
 		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, l);
@@ -411,7 +429,7 @@ void drawbackground2(){
 	}
 
 }
-*/
+
 
 void level1ButtonClickHandler(){
 	homePage = 0;
@@ -421,7 +439,7 @@ void level1ButtonClickHandler(){
 	rulepage = false;
 	level1 = true;
 }
-/*void level2ButtonClickHandler(){
+void level2ButtonClickHandler(){
 	homePage = 0;
 	Start = false;
 	storyPage = false;
@@ -429,7 +447,7 @@ void level1ButtonClickHandler(){
 	rulepage = false;
 	level1 = false;
 	level2 = true;
-}*/
+}
 
 
 
@@ -448,7 +466,7 @@ int main()
 	StartPageImage();
 	kuddusImage();
 	level1PageImage();
-	//level2PageImage();
+	level2PageImage();
 	iStart();
 	return 0;
 }
