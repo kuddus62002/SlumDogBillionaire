@@ -1,3 +1,16 @@
+/*
+  Project Nmae : Slum Dog Billionaire
+  Author       : Fahim Uddin Bin Ahmed
+                 Pryonti Shaha
+				 Tahmid Amir
+  Language     : c/c++
+  Project no   : 1
+ 
+ */
+
+
+
+
 #include "iGraphics.h"
 #include<iostream>
 using namespace std;
@@ -5,13 +18,18 @@ using namespace std;
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Idraw Here::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 int pageLength = 1200;
 int weigth = 800;
-int a, b, c, d, e, f, g, h, i, j, k, l;
+int JUMPLIMIT = 150;
+
+
+int a, b, c, d, e, f, g, h, i, j, k, l, m, n, o;
 int load[7];
 int kuddusRun[6];
+int kuddusJump[5];
 
 int Kuddusindex = 0;
 int KuddusCoordinateX = 10;
 int KuddusCoordinateY = 125;
+int KuddusCoordinateJump = 0;
 int standCounter = 0;
 
 
@@ -20,6 +38,8 @@ int loadTimer = 0;
 int startButtonClick = 0;
 int storyButtonClick = 1;
 double backgroundimage = 0;
+double obstacleposition = 1200;
+
 
 
 int homePage = 1;
@@ -34,6 +54,11 @@ bool flag = false;
 bool StandPosition = true;
 bool continueDone = false;
 
+bool jump = false;
+bool jumpup = false;
+//bool jumpdown = false;
+int jumplimit = 50;
+
 void fuctionForLoad();
 void fuctionForLoad2();
 void loadPage();
@@ -46,6 +71,8 @@ void drawStoryPage();
 void drawAboutPage();
 void drawRulePage();
 void drawbackground1();
+void drawobstacles1();
+void drawobstacles2();
 void drawbackground2();
 
 
@@ -149,7 +176,7 @@ void iMouse(int button, int state, int mx, int my)
 		else if (Start == true && (mx >= 40 && mx <= 209) && (my >= 531 && my <= 768)){
 			level1ButtonClickHandler();
 		}
-		else if (Start == true && (mx >= 879 && mx <= 1050) && (my >= 584 && my <= 761)){
+		else if (Start == true && (mx >= 440 && mx <= 650) && (my >= 320 && my <= 460)){
 			level2ButtonClickHandler();
 		}
 
@@ -174,6 +201,12 @@ void iKeyboard(unsigned char key)
 	{
 		
 	}
+	else if (key == ' '){
+		if (!jump){
+			jump = true;
+			jumpup = true;
+		}
+	}
 	
 	
 }
@@ -194,7 +227,7 @@ void iSpecialKeyboard(unsigned char key)
 	if (key == GLUT_KEY_RIGHT)
 	{
 		flag = true;
-		KuddusCoordinateX += 10;
+		//KuddusCoordinateX += 5;
 		Kuddusindex++;
 		if (Kuddusindex >= 5){
 			Kuddusindex = 0;
@@ -203,7 +236,7 @@ void iSpecialKeyboard(unsigned char key)
 	}
 	if (key == GLUT_KEY_LEFT)
 	{
-		KuddusCoordinateX -= 10;
+		//KuddusCoordinateX -= 5;
 		Kuddusindex--;
 		if (Kuddusindex <= 0){
 			Kuddusindex = 5;
@@ -215,8 +248,18 @@ void iSpecialKeyboard(unsigned char key)
 	{
 		
 	}
+
+
 	
 }
+
+void onKeyboardUp(int key, int x, int y){
+	if (key == GLUT_KEY_RIGHT || key == GLUT_KEY_LEFT || key == ' ')
+	{
+		StandPosition = true;
+	}
+}
+
 void loading(){
 	//cout << "Image loading";
 	load[0] = iLoadImage(".\\LPage\\L1.png");
@@ -233,8 +276,8 @@ void button() {
 	c = iLoadImage(".\\LPage\\Button\\L10.png");
 	d = iLoadImage(".\\LPage\\Button\\L11.png");
 	e = iLoadImage(".\\LPage\\Button\\L12.png");
-	k = iLoadImage(".\\LPage\\Background\\bg1.png");
-	l = iLoadImage(".\\LPage\\Background\\bankbg.jpg");
+	
+	
 }
 void StartPageImage(){
 	f = iLoadImage(".\\LPage\\L7.png");
@@ -246,18 +289,27 @@ void StartPageImage(){
 }
 
 void kuddusImage(){
+	//these array is for run;
 	kuddusRun[0] = iLoadImage(".\\LPage\\Kuddus\\Run\\R1.png");
 	kuddusRun[1] = iLoadImage(".\\LPage\\Kuddus\\Run\\R2.png");
 	kuddusRun[2] = iLoadImage(".\\LPage\\Kuddus\\Run\\R3.png");
 	kuddusRun[3] = iLoadImage(".\\LPage\\Kuddus\\Run\\R4.png");
 	kuddusRun[4] = iLoadImage(".\\LPage\\Kuddus\\Run\\R5.png");
-	cout << "Image loading";
+	//cout << "Image loading";
+	//this is for stand;
 	kuddusRun[5] = iLoadImage(".\\LPage\\Kuddus\\Stand\\R1.png");
+	//this images for jump;
+	kuddusJump[0] = iLoadImage(".\\LPage\\Kuddus\\Jump\\R1.png");
+	kuddusJump[1] = iLoadImage(".\\LPage\\Kuddus\\Jump\\R2.png");
 
 }
 
 void level1PageImage(){
-	
+	k = iLoadImage(".\\LPage\\Background\\bg1.png");
+	m = iLoadImage(".\\Lpage\\Obstacles\\rock-1.png");
+	n = iLoadImage(".\\Lpage\\Obstacles\\rock-2.png");
+	o = iLoadImage(".\\Lpage\\Obstacles\\rock-3.jpg");
+
 }
 
 void fuctionForLoad()
@@ -272,7 +324,7 @@ void fuctionForLoad()
 }
 
 void level2PageImage(){
-
+	l = iLoadImage(".\\LPage\\Background\\bankbg.jpg");
 }
 
 void fuctionForLoad2()
@@ -372,33 +424,68 @@ void BackButtonClickHandler(){
 
 void drawlevel1(){
 	drawbackground1();
-	if (!StandPosition){
-		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
-		if (standCounter >= 20){
+	
+	if (jump){
+		if (jumpup){
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[0]);
+		}
+		else{
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[1]);
+		}
+		
+	}
+	else{
+
+		if (!StandPosition){
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
+
+			/*if (standCounter >= 20){
 			standCounter = 0;
 			Kuddusindex = 0;
 			StandPosition = true;
 			flag = false;
+			}*/
+		}
+		else {
+
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
 		}
 	}
-	else {
-		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
-	}
+	
+	drawobstacles1();
 }
 void drawlevel2(){
 	drawbackground2();
-	if (!StandPosition){
-		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
-		if (standCounter >= 20){
+	
+	if (jump)
+	{
+		if (jumpup)
+		{
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[0]);
+		}
+		else
+		{
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[1]);
+		}
+
+	}
+	else{
+		if (!StandPosition)
+		{
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[Kuddusindex]);
+			/*if (standCounter >= 20){
 			standCounter = 0;
 			Kuddusindex = 0;
 			StandPosition = true;
 			flag = false;
+			}*/
+		}
+		else {
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[5]);
 		}
 	}
-	else {
-		iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
-	}
+	
+	drawobstacles2();
 }
 
 void drawbackground1(){
@@ -407,7 +494,10 @@ void drawbackground1(){
 	if (flag)
 	{
 		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, k);
-		backgroundimage -= 0.05;
+		if (!StandPosition){
+			backgroundimage -= 0.3;
+		}
+		
 		//cout << backgroundimage << "\n";
 		if (backgroundimage <-1200){
 			backgroundimage = 0;
@@ -416,19 +506,45 @@ void drawbackground1(){
 	
 }
 
+void drawobstacles1(){
+	iShowImage(obstacleposition, 125, 120, 100, m);
+	if (flag){
+		if (!StandPosition){
+			obstacleposition -= 0.3;
+		}
+		if (obstacleposition < 10){
+			obstacleposition = 1200;
+		}
+	}
+}
+
 void drawbackground2(){
 	//iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(backgroundimage, 0, pageLength, weigth, l);
 	if (flag)
 	{
 		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, l);
-		backgroundimage -= 0.05;
+		if (!StandPosition){
+			backgroundimage -= 0.2;
+		}
 		//cout << backgroundimage << "\n";
 		if (backgroundimage <-1200){
 			backgroundimage = 0;
 		}
 	}
 
+}
+
+void drawobstacles2(){
+	iShowImage(obstacleposition, 60, 120, 100, m);
+	if (flag){
+		if (!StandPosition){
+			obstacleposition -= 1;
+		}
+		if (obstacleposition < 10){
+			obstacleposition = 1200;
+		}
+	}
 }
 
 
@@ -450,7 +566,26 @@ void level2ButtonClickHandler(){
 	level2 = true;
 }
 //korsi to commit
-
+void change(){
+	if (jump)
+	{
+		if (jumpup)
+		{
+			(KuddusCoordinateJump += 5);
+			if (KuddusCoordinateJump >= JUMPLIMIT)
+			{
+				jumpup = false;
+			}
+		}
+		else{
+			KuddusCoordinateJump -= 5;
+			if (KuddusCoordinateJump < 0){
+				jump = false;
+				KuddusCoordinateJump = 0;
+			}
+		}
+	}
+}
 
 
 
@@ -459,8 +594,10 @@ void level2ButtonClickHandler(){
 
 int main()
 {
+	iSetTimer(15, change);
 	///srand((unsigned)time(NULL));
 	iInitialize(pageLength, weigth , "Project Title");
+	glutSpecialUpFunc(onKeyboardUp);
 	//a = iLoadImage("LPage\\L1.png");
 	///updated see the documentations
 	loading();
