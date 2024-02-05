@@ -22,7 +22,7 @@ int JUMPLIMIT = 250;
 #define RockNumber = 10;
 
 
-int a, b, c, d, e, f, g, h, img, j, k, l, m, n, o, p, won;
+int a, b, c, d, e, f, g, h, img, j, k, l, m, n, o, p, won, q2;
 int load[7];
 int kuddusRun[6];
 int kuddusJump[5];
@@ -57,6 +57,13 @@ bool gamewin = false;
 bool barikhawa = false;
 bool resetrock = false;
 bool QuizFlag2 = false;
+bool Playmusic = false;
+bool jumpsound = false;
+bool Playmusic1 = false;
+bool islevel1 = false;
+bool islevel2 = false;
+bool musicforload = false;
+
 
 bool StandPosition = true;
 bool continueDone = false;
@@ -85,6 +92,9 @@ void drawgameOver();
 void drawyouwon();
 void obstacleReset();
 void GenerateRocks();
+void playingmusic();
+void playingmusic1();
+
 
 
 
@@ -99,6 +109,8 @@ void exitButtonCliclHandler();
 void youwonButtonClickHandler();
 void quizwronganswer();
 void quizwronganswer2();
+void scorring();
+
 
 struct Obstacle
 {
@@ -132,7 +144,8 @@ struct Obstacle
 	}
 
 	void collission2(){
-		if ((KuddusCoordinateX + 119 >= rockX && KuddusCoordinateX + 119 <= rockX + 200) && (KuddusCoordinateY + KuddusCoordinateJump + 100 <= 395)){ /*&& (Start == true)*/
+		//cout << KuddusCoordinateY + KuddusCoordinateJump + 100 << endl;
+		if ((KuddusCoordinateX + 119 >= rockX && KuddusCoordinateX + 119 <= rockX + 200) && (KuddusCoordinateY + KuddusCoordinateJump + 100 <= 230)){ /*&& (Start == true)*/
 			//exit(0);
 			//cout << "fahim" << endl;
 			barikhawa = true;
@@ -226,6 +239,7 @@ void iMouse(int button, int state, int mx, int my)
 		if (indexLoad == 4){
 			continueDone = true;
 			indexLoad++;
+			PlaySound(".\\LPage\\BgMusic\\loading.wav", NULL, SND_ASYNC);
 		}
 		printf("x = %d, y = %d\n", mx, my);
 		// if (mx >= leftX && mx <= rightX && my <= topY && my >= bottomY)
@@ -256,10 +270,19 @@ void iMouse(int button, int state, int mx, int my)
 		else if (gameOver == true && barikhawa == false && (mx >= 35 && mx <= 480) && (my >= 380 && my <= 730)){
 			//cout << "ami" << endl;
 			gameOver = false;
-			level1ButtonClickHandler();
+			if (islevel1){
+				level1ButtonClickHandler();
+			}
+			else if (islevel2){
+				level2ButtonClickHandler();
+			}
+			
 		}
 
 		else if (gameOver == true && barikhawa == false && (mx >= 860 && mx <= 1150) && (my >= 187 && my <= 345)){
+			StartButtonClickHandler();
+		}
+		else if (gamewin == true && (mx >= 52 && mx <= 427) && (my >= 240 && my <= 570)){
 			StartButtonClickHandler();
 		}
 			
@@ -320,7 +343,9 @@ void iKeyboard(unsigned char key)
 	else if (key == ' '){
 		if (!jump){
 			jump = true;
+			PlaySound(".\\LPage\\BgMusic\\jump.wav", NULL, SND_ASYNC);
 			jumpup = true;
+			jumpsound = true;
 		}
 	}
 	
@@ -345,6 +370,7 @@ void iSpecialKeyboard(unsigned char key)
 		flag = true;
 		if (QuizFlag1 == true){
 			KuddusCoordinateX += 20;
+			QuizFlag1 = false;
 		}
 		Kuddusindex++;
 		if (Kuddusindex >= 5){
@@ -364,7 +390,7 @@ void iSpecialKeyboard(unsigned char key)
 	
 	if (key == GLUT_KEY_HOME)
 	{
-		
+		BackButtonClickHandler();
 	}
 
 
@@ -434,11 +460,16 @@ void level1PageImage(){
 void level2PageImage(){
 	l = iLoadImage(".\\LPage\\Background\\bankbg.jpg");
 	p = iLoadImage(".\\LPage\\Obstacles\\table-1.png");
+	q2= iLoadImage(".\\Lpage\\Background\\quiz1.png");
 }
 
 
 void fuctionForLoad()
 {
+	if (!musicforload){
+		PlaySound(".\\LPage\\BgMusic\\intro.wav", NULL, SND_ASYNC);
+		musicforload = true;
+	}
 	loadTimer++;
 
 	if (loadTimer >= 500)
@@ -495,6 +526,8 @@ void drawStartPage(){
 void StartButtonClickHandler(){
 	homePage = 0;
 	Start = true;
+	PlaySound(".\\LPage\\BgMusic\\StartingMusic.wav", NULL, SND_ASYNC);
+
 }
 
 void drawStoryPage(){
@@ -507,6 +540,7 @@ void StoryButtonClickHandler(){
 	homePage = 0;
 	Start = false;
 	storyPage = true;
+	PlaySound(".\\LPage\\BgMusic\\Story.wav", NULL, SND_ASYNC);
 }
 
 void drawAboutPage(){
@@ -523,6 +557,10 @@ void AboutButtonClickHandler(){
 }
 
 void drawRulePage(){
+	/*if (rulepage){
+		cout << rulepage;
+		
+	}*/
 	iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(0, 0, pageLength, weigth, j);
 	iShowImage(5, 5, 50, 80, img);
@@ -534,6 +572,7 @@ void RuleButtonClickHandler(){
 	storyPage = false;
 	aboutpage = false;
 	rulepage = true;
+	PlaySound(".\\LPage\\BgMusic\\RulesMusic.wav", NULL, SND_ASYNC);
 }
 
 void BackButtonClickHandler(){
@@ -542,11 +581,25 @@ void BackButtonClickHandler(){
 	storyPage = false;
 	aboutpage = false;
 	rulepage = false;
+	PlaySound(".\\LPage\\BgMusic\\loading.wav", NULL, SND_ASYNC);
+}
+
+void scorring(){
+	
+	char score[20];
+	sprintf_s(score, "%d", RockCount);
+	iSetColor(3, 252, 227);
+	iFilledRectangle(1060, 710, 100, 50);
+	iSetColor(0, 0, 0);
+	iText(1100, 725, score, GLUT_BITMAP_TIMES_ROMAN_24);
 }
 
 
 void drawlevel1(){
+	islevel1 = true;
+	islevel2 = false;
 	drawbackground1();
+	scorring();
 	
 	if (jump){
 		if (jumpup){
@@ -554,11 +607,16 @@ void drawlevel1(){
 		}
 		else{
 			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[1]);
+			//Playmusic = true;
+
 		}
 		
 	}
 	else{
-
+		if (jumpsound){
+			Playmusic = true;
+			jumpsound = false;
+		}
 		if (!StandPosition){
 			iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
 
@@ -595,23 +653,32 @@ void drawlevel1(){
 			iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
 		}
 	}
+	playingmusic();
 }
 void drawlevel2(){
+	islevel2 = true;
+	islevel1 = false;
 	drawbackground2();
+
+	scorring();
 	
 	if (jump)
 	{
 		if (jumpup)
 		{
-			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump+100, 119, 200, kuddusJump[0]);
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[0]);
 		}
 		else
 		{
-			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump+100, 119, 200, kuddusJump[1]);
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[1]);
 		}
 
 	}
 	else{
+		if (jumpsound){
+			Playmusic1 = true;
+			jumpsound = false;
+		}
 		if (!StandPosition)
 		{
 			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[Kuddusindex]);
@@ -629,7 +696,7 @@ void drawlevel2(){
 	
 	drawobstacles2();
 	if (QuizFlag2 == true){
-		iShowImage(0, 0, pageLength, weigth, n);
+		iShowImage(0, 0, pageLength, weigth, q2);
 
 		if (!StandPosition){
 			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[Kuddusindex]);
@@ -645,6 +712,7 @@ void drawlevel2(){
 			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[5]);
 		}
 	}
+	playingmusic1();
 	
 }
 
@@ -655,7 +723,7 @@ void drawbackground1(){
 	{
 		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, k);
 		if (!StandPosition){
-			backgroundimage -= 0.9                  ;
+			backgroundimage -= 0.9;
 		}
 		
 		//cout << backgroundimage << "\n";
@@ -679,6 +747,8 @@ void drawobstacles1(){
 				if (RockCount >= 10){
 					cout << "you win" << endl;
 					QuizFlag1 = true;
+					QuizFlag2 = false;
+
 				}//quiz start;
 				rock1[i].rockX = 120000;
 			}
@@ -708,19 +778,20 @@ void   drawbackground2(){
 }
 
 void drawobstacles2(){
-	for (int i = 0; i < 10; i++){
+	for (int i = 0; i < 13; i++){
 		iShowImage(rock2[i].rockX, 60, 200, 180, p);
 		if (flag){
 			if (!StandPosition){
 				rock2[i].rockX -= 1;
 			}
-			if (rock2[i].rockX < 10){
+			if (rock2[i].rockX < 13){
 				RockCount++;
-				if (RockCount >= 10){
+				if (RockCount >= 13){
 					cout << "you win" << endl;
 					QuizFlag2 = true;
+					QuizFlag1 = false;
 				}//quiz start;
-				rock1[i].rockX = 120000;
+				rock2[i].rockX = 120000;
 			
 			}
 		}
@@ -777,6 +848,8 @@ void level1ButtonClickHandler(){
 	level2 = false;
 	gamewin = false;
 	barikhawa = false;
+	Playmusic = true;
+	//PlaySound(".\\LPage\\BgMusic\\Level1Music.wav", NULL, SND_ASYNC);
 }
 
 void level2ButtonClickHandler(){
@@ -785,8 +858,12 @@ void level2ButtonClickHandler(){
 	storyPage = false;
 	aboutpage = false;
 	rulepage = false;
+	gameOver = false;
 	level1 = false;
 	level2 = true;
+	gamewin = false;
+	barikhawa = false;
+	Playmusic1 = true;
 }
 void quizwronganswer(){
 	homePage = 0;
@@ -829,6 +906,10 @@ void exitButtonCliclHandler(){
 	level1 = false;
 	level2 = false;
 	barikhawa = false;
+	QuizFlag1 = false;
+	QuizFlag2 = false;
+	obstacleReset();
+	PlaySound(".\\LPage\\BgMusic\\Gameover.wav", NULL, SND_ASYNC);
 }
 
 void youwonButtonClickHandler(){
@@ -841,6 +922,7 @@ void youwonButtonClickHandler(){
 	level1 = false;
 	level2 = false;
 	gamewin = true;
+	PlaySound(".\\LPage\\BgMusic\\quizwonMusic.wav", NULL, SND_ASYNC);
 }
 
 
@@ -879,11 +961,27 @@ void GenerateRocks(){
 	}
 	
 }
+void playingmusic(){
+	if (Playmusic){
+
+		PlaySound(".\\LPage\\BgMusic\\Level1Music.wav", NULL, SND_ASYNC);
+		Playmusic = false;
+	}
+	
+}
+void playingmusic1(){
+	if (Playmusic1){
+
+		PlaySound(".\\LPage\\BgMusic\\Level2Music.wav", NULL, SND_ASYNC);
+		Playmusic1 = false;
+	}
+}
 
 
 
 int main()
 {
+	
 	iSetTimer(15, change);
 	///srand((unsigned)time(NULL));
 	iInitialize(pageLength, weigth , "Project Title");
