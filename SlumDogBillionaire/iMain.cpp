@@ -18,13 +18,15 @@ using namespace std;
 //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::Idraw Here::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 int pageLength = 1200;
 int weigth = 800;
-int JUMPLIMIT = 150;
+int JUMPLIMIT = 250;        
+#define RockNumber = 10;
 
 
-int a, b, c, d, e, f, g, h, i, j, k, l, m, n, o;
+int a, b, c, d, e, f, g, h, img, j, k, l, m, n, o, p, won;
 int load[7];
 int kuddusRun[6];
 int kuddusJump[5];
+int RockCount = 0;
 
 int Kuddusindex = 0;
 int KuddusCoordinateX = 10;
@@ -38,7 +40,6 @@ int loadTimer = 0;
 int startButtonClick = 0;
 int storyButtonClick = 1;
 double backgroundimage = 0;
-double obstacleposition = 1200;
 
 
 
@@ -50,6 +51,12 @@ bool rulepage = false;
 bool level1 = false;
 bool level2 = false;
 bool flag = false;
+bool QuizFlag1 = false;
+bool gameOver = false;
+bool gamewin = false;
+bool barikhawa = false;
+bool resetrock = false;
+bool QuizFlag2 = false;
 
 bool StandPosition = true;
 bool continueDone = false;
@@ -74,6 +81,10 @@ void drawbackground1();
 void drawobstacles1();
 void drawobstacles2();
 void drawbackground2();
+void drawgameOver();
+void drawyouwon();
+void obstacleReset();
+void GenerateRocks();
 
 
 
@@ -84,8 +95,65 @@ void RuleButtonClickHandler();
 void BackButtonClickHandler();
 void level1ButtonClickHandler();
 void level2ButtonClickHandler();
+void exitButtonCliclHandler();
+void youwonButtonClickHandler();
+void quizwronganswer();
+void quizwronganswer2();
+
+struct Obstacle
+{
+	int rockX =1200;
+	int rockY = 125;
+	int roackIndex;
+	bool rockShow;
+
+	Obstacle(){
+		;
+	};
+
+	Obstacle(int x){
+		rockX = x;
+	};
 
 
+
+
+	void collission(){
+		if ((KuddusCoordinateX + 119 >= rockX && KuddusCoordinateX + 119 <= rockX + 120) && (KuddusCoordinateY + KuddusCoordinateJump + 100 <= 315)){ /*&& (Start == true)*/
+			//exit(0);
+			//cout << "fahim" << endl;
+			barikhawa = true;
+			resetrock = true;
+		}
+		if (barikhawa){
+			obstacleReset();
+			exitButtonCliclHandler();
+		}
+	}
+
+	void collission2(){
+		if ((KuddusCoordinateX + 119 >= rockX && KuddusCoordinateX + 119 <= rockX + 200) && (KuddusCoordinateY + KuddusCoordinateJump + 100 <= 395)){ /*&& (Start == true)*/
+			//exit(0);
+			//cout << "fahim" << endl;
+			barikhawa = true;
+			resetrock = true;
+		}
+		if (barikhawa){
+			obstacleReset();
+			exitButtonCliclHandler();
+		}
+	}
+};
+
+Obstacle rock2[13];
+Obstacle rock1[10];
+Obstacle rockdefault;
+
+
+
+
+
+                    
 
 
 void iDraw()
@@ -110,12 +178,18 @@ void iDraw()
 		drawRulePage();
 	}
 	else if (level1){
-		
+		cout << "fahim" << endl;
 		drawlevel1();
 	}
 	else if (level2){
 
 		drawlevel2();
+	}
+	else if (gameOver){
+		drawgameOver();
+	}
+	else if (gamewin){
+		drawyouwon();
 	}
 	
 
@@ -179,6 +253,18 @@ void iMouse(int button, int state, int mx, int my)
 		else if (Start == true && (mx >= 440 && mx <= 650) && (my >= 320 && my <= 460)){
 			level2ButtonClickHandler();
 		}
+		else if (gameOver == true && barikhawa == false && (mx >= 35 && mx <= 480) && (my >= 380 && my <= 730)){
+			//cout << "ami" << endl;
+			gameOver = false;
+			level1ButtonClickHandler();
+		}
+
+		else if (gameOver == true && barikhawa == false && (mx >= 860 && mx <= 1150) && (my >= 187 && my <= 345)){
+			StartButtonClickHandler();
+		}
+			
+			
+		
 
 	}
 	
@@ -197,9 +283,39 @@ key- holds the ASCII value of the key pressed.
 
 void iKeyboard(unsigned char key)
 {
-	if (key == '\r')
+	if (key == 'a')
 	{
+		if (QuizFlag1){
+			quizwronganswer();
+		}
+		else if (QuizFlag2){
+			youwonButtonClickHandler();
+		}
 		
+	}
+	else if (key == 'b'){
+		if (QuizFlag1){
+			youwonButtonClickHandler();
+		}
+		else if (QuizFlag2){
+			quizwronganswer2();
+		}
+	}
+	else if (key == 'c'){
+		if (QuizFlag1){
+			quizwronganswer();
+		}
+		else if (QuizFlag2){
+			quizwronganswer2();
+		}
+	}
+	else if (key == 'd'){
+		if (QuizFlag1){
+			quizwronganswer();
+		}
+		else if (QuizFlag2){
+			quizwronganswer2();
+		}
 	}
 	else if (key == ' '){
 		if (!jump){
@@ -227,7 +343,9 @@ void iSpecialKeyboard(unsigned char key)
 	if (key == GLUT_KEY_RIGHT)
 	{
 		flag = true;
-		//KuddusCoordinateX += 5;
+		if (QuizFlag1 == true){
+			KuddusCoordinateX += 20;
+		}
 		Kuddusindex++;
 		if (Kuddusindex >= 5){
 			Kuddusindex = 0;
@@ -283,7 +401,7 @@ void StartPageImage(){
 	f = iLoadImage(".\\LPage\\L7.png");
 	g = iLoadImage(".\\LPage\\4.png");
 	h = iLoadImage(".\\LPage\\3.png");
-	i = iLoadImage(".\\LPage\\back.png");
+	img = iLoadImage(".\\LPage\\back.png");
 	j = iLoadImage(".\\LPage\\Rules.png");
 	
 }
@@ -306,11 +424,18 @@ void kuddusImage(){
 
 void level1PageImage(){
 	k = iLoadImage(".\\LPage\\Background\\bg1.png");
-	m = iLoadImage(".\\Lpage\\Obstacles\\rock-1.png");
-	n = iLoadImage(".\\Lpage\\Obstacles\\rock-2.png");
-	o = iLoadImage(".\\Lpage\\Obstacles\\rock-3.jpg");
+	m = iLoadImage(".\\Lpage\\Background\\gameOver.png");
+	n = iLoadImage(".\\Lpage\\Background\\quiz.png");
+	o = iLoadImage(".\\Lpage\\Obstacles\\rock-3.png");
+	won = iLoadImage(".\\Lpage\\Background\\won.png");
 
 }
+
+void level2PageImage(){
+	l = iLoadImage(".\\LPage\\Background\\bankbg.jpg");
+	p = iLoadImage(".\\LPage\\Obstacles\\table-1.png");
+}
+
 
 void fuctionForLoad()
 {
@@ -323,9 +448,6 @@ void fuctionForLoad()
 	}
 }
 
-void level2PageImage(){
-	l = iLoadImage(".\\LPage\\Background\\bankbg.jpg");
-}
 
 void fuctionForLoad2()
 {
@@ -367,7 +489,7 @@ void loadPage(){
 void drawStartPage(){
 	iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(0, 0, pageLength, weigth, f);
-	iShowImage(5, 5, 50, 80, i);
+	iShowImage(5, 5, 50, 80, img);
 }
 
 void StartButtonClickHandler(){
@@ -378,7 +500,7 @@ void StartButtonClickHandler(){
 void drawStoryPage(){
 	iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(0, 0, pageLength, weigth, g);
-	iShowImage(5, 5, 50, 80, i);
+	iShowImage(5, 5, 50, 80, img);
 }
 
 void StoryButtonClickHandler(){
@@ -390,7 +512,7 @@ void StoryButtonClickHandler(){
 void drawAboutPage(){
 	iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(0, 0, pageLength, weigth, h);
-	iShowImage(5, 5, 50, 80, i);
+	iShowImage(5, 5, 50, 80, img);
 }
 
 void AboutButtonClickHandler(){
@@ -403,7 +525,7 @@ void AboutButtonClickHandler(){
 void drawRulePage(){
 	iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(0, 0, pageLength, weigth, j);
-	iShowImage(5, 5, 50, 80, i);
+	iShowImage(5, 5, 50, 80, img);
 }
 
 void RuleButtonClickHandler(){
@@ -421,6 +543,7 @@ void BackButtonClickHandler(){
 	aboutpage = false;
 	rulepage = false;
 }
+
 
 void drawlevel1(){
 	drawbackground1();
@@ -453,6 +576,25 @@ void drawlevel1(){
 	}
 	
 	drawobstacles1();
+
+	if (QuizFlag1 == true){
+		iShowImage(0, 0, pageLength, weigth, n);
+
+		if (!StandPosition){
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[Kuddusindex]);
+
+			/*if (standCounter >= 20){
+			standCounter = 0;
+			Kuddusindex = 0;
+			StandPosition = true;
+			flag = false;
+			}*/
+		}
+		else {
+
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY, 119, 200, kuddusRun[5]);
+		}
+	}
 }
 void drawlevel2(){
 	drawbackground2();
@@ -461,11 +603,11 @@ void drawlevel2(){
 	{
 		if (jumpup)
 		{
-			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[0]);
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump+100, 119, 200, kuddusJump[0]);
 		}
 		else
 		{
-			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump, 119, 200, kuddusJump[1]);
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY + KuddusCoordinateJump+100, 119, 200, kuddusJump[1]);
 		}
 
 	}
@@ -486,6 +628,24 @@ void drawlevel2(){
 	}
 	
 	drawobstacles2();
+	if (QuizFlag2 == true){
+		iShowImage(0, 0, pageLength, weigth, n);
+
+		if (!StandPosition){
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[Kuddusindex]);
+			/*if (standCounter >= 20){
+			standCounter = 0;
+			Kuddusindex = 0;
+			StandPosition = true;
+			flag = false;
+			}*/
+		}
+		else {
+
+			iShowImage(KuddusCoordinateX, KuddusCoordinateY - 65, 119, 200, kuddusRun[5]);
+		}
+	}
+	
 }
 
 void drawbackground1(){
@@ -495,7 +655,7 @@ void drawbackground1(){
 	{
 		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, k);
 		if (!StandPosition){
-			backgroundimage -= 0.3;
+			backgroundimage -= 0.9                  ;
 		}
 		
 		//cout << backgroundimage << "\n";
@@ -507,25 +667,37 @@ void drawbackground1(){
 }
 
 void drawobstacles1(){
-	iShowImage(obstacleposition, 125, 120, 100, m);
-	if (flag){
-		if (!StandPosition){
-			obstacleposition -= 0.3;
+	for (int i = 0; i < 10; i++){
+		iShowImage(rock1[i].rockX, 125, 120, 100, o );
+		if (flag){
+			if (!StandPosition){
+				rock1[i].rockX -= 0.9;
+			}
+			if (rock1[i].rockX < 10){
+				//QuizFlag1 = true;
+				 RockCount++;
+				if (RockCount >= 10){
+					cout << "you win" << endl;
+					QuizFlag1 = true;
+				}//quiz start;
+				rock1[i].rockX = 120000;
+			}
+			//rock1[i].rockX = 120000;
 		}
-		if (obstacleposition < 10){
-			obstacleposition = 1200;
-		}
+		rock1[i].collission();
 	}
+	
+	
 }
 
-void drawbackground2(){
+void   drawbackground2(){
 	//iFilledRectangle(0, 0, pageLength, weigth);
 	iShowImage(backgroundimage, 0, pageLength, weigth, l);
 	if (flag)
 	{
 		iShowImage(backgroundimage + 1200, 0, pageLength, weigth, l);
 		if (!StandPosition){
-			backgroundimage -= 0.2;
+			backgroundimage -= 1;
 		}
 		//cout << backgroundimage << "\n";
 		if (backgroundimage <-1200){
@@ -536,26 +708,77 @@ void drawbackground2(){
 }
 
 void drawobstacles2(){
-	iShowImage(obstacleposition, 60, 120, 100, m);
-	if (flag){
-		if (!StandPosition){
-			obstacleposition -= 1;
+	for (int i = 0; i < 10; i++){
+		iShowImage(rock2[i].rockX, 60, 200, 180, p);
+		if (flag){
+			if (!StandPosition){
+				rock2[i].rockX -= 1;
+			}
+			if (rock2[i].rockX < 10){
+				RockCount++;
+				if (RockCount >= 10){
+					cout << "you win" << endl;
+					QuizFlag2 = true;
+				}//quiz start;
+				rock1[i].rockX = 120000;
+			
+			}
 		}
-		if (obstacleposition < 10){
-			obstacleposition = 1200;
-		}
+		rock2[i].collission2();
 	}
+	
+}
+
+void obstacleReset(){
+	if (resetrock){
+		/*if (level1){
+			for (int i = 0; i < 10; i++){
+				rock1[i].rockX = rockdefault.rockX;
+			}
+			RockCount = 0;
+		}
+		else if (level2){
+			for (int i = 0; i < 13; i++){
+				rock2[i].rockX = rockdefault.rockX;
+			}*/
+		GenerateRocks();
+			RockCount = 0;
+		
+		KuddusCoordinateX = 10;
+		KuddusCoordinateY = 125;
+	}
+
+	resetrock = false;
+}
+
+void drawgameOver(){
+	iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(0, 0, pageLength, weigth, m);
+	barikhawa = false;
+	
+
+}
+void drawyouwon(){
+	iFilledRectangle(0, 0, pageLength, weigth);
+	iShowImage(0, 0, pageLength, weigth, won);
 }
 
 
 void level1ButtonClickHandler(){
+	//cout << "dekhi" << endl;
+	cout << barikhawa << endl;
 	homePage = 0;
 	Start = false;
 	storyPage = false;
 	aboutpage = false;
 	rulepage = false;
+	gameOver = false;
 	level1 = true;
+	level2 = false;
+	gamewin = false;
+	barikhawa = false;
 }
+
 void level2ButtonClickHandler(){
 	homePage = 0;
 	Start = false;
@@ -565,6 +788,62 @@ void level2ButtonClickHandler(){
 	level1 = false;
 	level2 = true;
 }
+void quizwronganswer(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+	gameOver = false;
+	level1 = true;
+	resetrock = true;
+	obstacleReset();
+	level2 = false;
+	barikhawa = false;
+	QuizFlag1 = false;
+}
+void quizwronganswer2(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+	gameOver = false;
+	level1 = false;
+	level2 = true;
+	resetrock = true;
+	obstacleReset();
+	barikhawa = false;
+	QuizFlag1 = false;
+	QuizFlag2 = false;
+
+}
+
+void exitButtonCliclHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+	gameOver = true;
+	level1 = false;
+	level2 = false;
+	barikhawa = false;
+}
+
+void youwonButtonClickHandler(){
+	homePage = 0;
+	Start = false;
+	storyPage = false;
+	aboutpage = false;
+	rulepage = false;
+	gameOver = false;
+	level1 = false;
+	level2 = false;
+	gamewin = true;
+}
+
+
 //korsi to commit
 void change(){
 	if (jump)
@@ -588,7 +867,18 @@ void change(){
 }
 
 
-
+void GenerateRocks(){
+	
+		for (int i = 0; i < 10; i++){
+			rock1[i] = Obstacle(1200 + i * 900);
+		}
+	
+	
+		for (int i = 0; i < 13; i++){
+			rock2[i] = Obstacle(1200 + i * 900);
+	}
+	
+}
 
 
 
@@ -600,6 +890,7 @@ int main()
 	glutSpecialUpFunc(onKeyboardUp);
 	//a = iLoadImage("LPage\\L1.png");
 	///updated see the documentations
+	GenerateRocks();      
 	loading();
 	button();
 	loadPage();
