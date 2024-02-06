@@ -368,10 +368,10 @@ void iSpecialKeyboard(unsigned char key)
 	if (key == GLUT_KEY_RIGHT)
 	{
 		flag = true;
-		if (QuizFlag1 == true){
+		/*if (QuizFlag1 == true){
 			KuddusCoordinateX += 20;
 			QuizFlag1 = false;
-		}
+		}*/
 		Kuddusindex++;
 		if (Kuddusindex >= 5){
 			Kuddusindex = 0;
@@ -467,7 +467,7 @@ void level2PageImage(){
 void fuctionForLoad()
 {
 	if (!musicforload){
-		PlaySound(".\\LPage\\BgMusic\\intro.wav", NULL, SND_ASYNC);
+		PlaySound(".\\LPage\\BgMusic\\intro.wav", NULL, SND_LOOP | SND_ASYNC);
 		musicforload = true;
 	}
 	loadTimer++;
@@ -526,7 +526,7 @@ void drawStartPage(){
 void StartButtonClickHandler(){
 	homePage = 0;
 	Start = true;
-	PlaySound(".\\LPage\\BgMusic\\StartingMusic.wav", NULL, SND_ASYNC);
+	PlaySound(".\\LPage\\BgMusic\\StartingMusic.wav", NULL, SND_LOOP | SND_ASYNC);
 
 }
 
@@ -837,7 +837,7 @@ void drawyouwon(){
 
 void level1ButtonClickHandler(){
 	//cout << "dekhi" << endl;
-	cout << barikhawa << endl;
+	//cout << barikhawa << endl;
 	homePage = 0;
 	Start = false;
 	storyPage = false;
@@ -964,7 +964,7 @@ void GenerateRocks(){
 void playingmusic(){
 	if (Playmusic){
 
-		PlaySound(".\\LPage\\BgMusic\\Level1Music.wav", NULL, SND_ASYNC);
+		PlaySound(".\\LPage\\BgMusic\\Level1Music.wav", NULL, SND_LOOP | SND_ASYNC);
 		Playmusic = false;
 	}
 	
@@ -972,7 +972,7 @@ void playingmusic(){
 void playingmusic1(){
 	if (Playmusic1){
 
-		PlaySound(".\\LPage\\BgMusic\\Level2Music.wav", NULL, SND_ASYNC);
+		PlaySound(".\\LPage\\BgMusic\\Level2Music.wav", NULL, SND_LOOP | SND_ASYNC);
 		Playmusic1 = false;
 	}
 }
